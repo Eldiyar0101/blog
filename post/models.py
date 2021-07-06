@@ -32,13 +32,15 @@ class Category(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name='Заголовки')
-    content = models.TextField(max_length='Контент')
-    created_ad = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Автор')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категрия')
+    content = models.TextField(verbose_name='Контент')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Авто',
+                 related_name='posts')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категрия', related_name='posts')
     tags = models.ManyToManyField(Tag, verbose_name='Тэги')
     slug = models.SlugField(verbose_name='Слаг')
-    views = models.PositiveIntegerField(default=0)
+    views = models.PositiveIntegerField(default=0, verbose_name='Количество просмотров')
+    photo = models.ImageField(upload_to ='post/%Y/%m/%d/', verbose_name='Фото', null=True, blank=True)
 
 
     def __str__(self):
