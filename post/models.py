@@ -1,7 +1,7 @@
 
-from enum import auto
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 
 class Tag(models.Model):
@@ -20,11 +20,15 @@ class Tag(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=500, verbose_name='Название')
-    slug = models.SlugField()
+    slug = models.SlugField(verbose_name='Слаг')
 
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('posts_by_category', kwargs={'slug': self.slug})
+
 
     class Meta:
         verbose_name = 'категория'
@@ -45,6 +49,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self. title
+
+    def get_absolute_url(self):
+        return reverse('post_detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'Пост'

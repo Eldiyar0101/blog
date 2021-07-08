@@ -1,3 +1,33 @@
-from django.shortcuts import render
+from django.http import response
+from django.views.generic import ListView, DetailView
 
-# Create your views here.
+from post.models import Post
+
+
+class HomeView(ListView):
+    model = Post
+    template_name = 'post/index.html'
+    context_object_name = 'posts'
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'post/post-detail.html'
+    context_object_name = 'post'
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        post = self.object
+        post.views = post.views + 1
+        post.save()
+        return response
+
+class PostByCateregory(ListView):
+    model = Post
+    template_name = 'post/index.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        category_slug = self.kwargs.get('slug')
+        posts = Post.objects.filter(category__slug=category_slug)
+        return posts
